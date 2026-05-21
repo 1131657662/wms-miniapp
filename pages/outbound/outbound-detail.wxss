@@ -128,7 +128,7 @@
   margin: 0 16rpx !important;
   border-radius: 16rpx !important;
   overflow: hidden;
-  box-shadow: 0 8rpx 32rpx rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06) !important;
   border: 1rpx solid rgba(228, 231, 237, 0.65) !important;
 }
 
@@ -142,15 +142,15 @@
   padding: 0;
   background: #fff;
   border-radius: 16rpx;
-  box-shadow: 0 8rpx 32rpx rgba(15, 23, 42, 0.06);
+  box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06);
   border: 1rpx solid rgba(228, 231, 237, 0.65);
   display: flex;
-  overflow: hidden;
 }
 
 .item-card-accent {
   width: 8rpx;
   flex-shrink: 0;
+  border-radius: 16rpx 0 0 16rpx;
   background: linear-gradient(180deg, #409eff 0%, #79bbff 100%);
 }
 
@@ -303,7 +303,7 @@
   padding: 24rpx 20rpx;
   background: #fff;
   border-radius: 16rpx;
-  box-shadow: 0 8rpx 32rpx rgba(15, 23, 42, 0.06);
+  box-shadow: 0 2rpx 12rpx rgba(15, 23, 42, 0.06);
   border: 1rpx solid rgba(228, 231, 237, 0.65);
 }
 
