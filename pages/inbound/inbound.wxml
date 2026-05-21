@@ -95,13 +95,10 @@
     refresher-triggered="{{refreshing}}"
     bindrefresherrefresh="onRefresh"
   >
-    <view wx:if="{{keyword}}" class="inbound-result-tip">
-      <van-icon name="info-o" size="28rpx" color="#409EFF" />
-      <view class="inbound-result-tip-text">
-        关键词
-        <text class="inbound-result-tip-kw">{{keyword}}</text>
-        会匹配单号、供应商、车号、柜号及明细商品。卡片上的件数/吨位为整张入库单合计；若因明细命中搜到本单，请留意下方「明细命中」区域。
-      </view>
+    <view wx:if="{{keyword}}" class="result-summary">
+      <text class="result-summary-icon">🔍</text>
+      <text class="result-summary-kw">"{{keyword}}"</text>
+      <text class="result-summary-stat">找到 {{total}} 条结果</text>
     </view>
 
     <view wx:if="{{!empty}}" class="list-stack">
@@ -126,30 +123,34 @@
               <text wx:else class="c-wh">{{p.t}}</text>
             </block>
           </view>
-          <van-tag color="{{os.colorForStatus(item.order_status)}}" text-color="#fff" size="small" round>{{os.labelForStatus(item.order_status)}}</van-tag>
+          <view class="c-tags">
+            <van-tag wx:if="{{item._hasProductMatch}}" color="#ecf5ff" text-color="#409EFF" size="small" round>匹配产品</van-tag>
+            <van-tag color="{{os.colorForStatus(item.order_status)}}" text-color="#fff" size="small" round>{{os.labelForStatus(item.order_status)}}</van-tag>
+          </view>
         </view>
 
-        <view class="c-match-section" wx:if="{{item.match_details && item.match_details.length > 0}}">
+        <view class="c-match-section" wx:if="{{item._hasProductMatch}}">
           <view class="c-match-section-hd">
-            <text class="c-match-badge">明细命中</text>
-            <text class="c-match-count">命中明细 {{item.match_details.length}} 条</text>
+            <text class="c-match-badge">产品匹配</text>
+            <text wx:if="{{item._matchDetailMore > 0}}" class="c-match-count">还有 +{{item._matchDetailMore}} 条</text>
           </view>
-          <view class="c-match-line">
-            <block wx:for="{{hl.parts(item.match_details[0].product_code, keyword)}}" wx:for-item="p">
+          <view class="c-match-line" wx:for="{{item._matchDetails}}" wx:for-item="md" wx:key="product_code">
+            <block wx:for="{{hl.parts(md.product_code, keyword)}}" wx:for-item="p">
               <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
               <text wx:else>{{p.t}}</text>
             </block>
             <text class="c-wh"> · </text>
-            <block wx:for="{{hl.parts(item.match_details[0].product_name, keyword)}}" wx:for-item="p">
+            <block wx:for="{{hl.parts(md.product_name, keyword)}}" wx:for-item="p">
               <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
               <text wx:else>{{p.t}}</text>
             </block>
-          </view>
-          <view class="c-match-model" wx:if="{{item.match_details[0].product_model}}">
-            <text class="c-match-model-label">型号 </text>
-            <block wx:for="{{hl.parts(item.match_details[0].product_model, keyword)}}" wx:for-item="p">
-              <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
-              <text wx:else>{{p.t}}</text>
+            <block wx:if="{{md.product_model}}">
+              <text class="c-wh"> · </text>
+              <text class="c-match-model-label">型号</text>
+              <block wx:for="{{hl.parts(md.product_model, keyword)}}" wx:for-item="p">
+                <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+                <text wx:else>{{p.t}}</text>
+              </block>
             </block>
           </view>
         </view>

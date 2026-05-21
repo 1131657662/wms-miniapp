@@ -72,6 +72,9 @@ Page({
         ...r,
         total_qty: r.total_qty != null ? r.total_qty : r.totalQty,
         total_weight: r.total_weight != null ? r.total_weight : r.totalWeight,
+        _hasProductMatch: !!(r._match && r._match.details && r._match.details.length > 0),
+        _matchDetails: (r._match && r._match.details) || [],
+        _matchDetailMore: (r._match && r._match.detailCount) ? r._match.detailCount - r._match.details.length : 0,
       }));
       const total = responseTotal(res.data);
       const list = reset ? rows : this.data.list.concat(rows);
