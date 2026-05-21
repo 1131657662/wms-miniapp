@@ -214,7 +214,7 @@
       <text class="ui-load-text">加载中...</text>
     </view>
     <view class="ui-load-foot" wx:elif="{{!hasMore && !empty}}">
-      <van-icon name="passed" size="28rpx" color="#c0c4cc" />
+      <van-icon name="checked" size="28rpx" color="#67C23A" />
       <text class="ui-load-text">已加载全部 {{total}} 条</text>
     </view>
   </scroll-view>
