@@ -341,6 +341,23 @@
   margin-right: 4rpx;
 }
 
+.c-match-qty {
+  font-size: 24rpx;
+  color: #606266;
+  font-weight: 500;
+}
+
+.c-match-qty-sep {
+  font-size: 22rpx;
+  color: #909399;
+}
+
+.c-match-weight {
+  font-size: 24rpx;
+  color: #606266;
+  font-weight: 500;
+}
+
 .scroll-body {
   flex: 1;
   min-height: 0;

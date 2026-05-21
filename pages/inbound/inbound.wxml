@@ -152,6 +152,12 @@
                 <text wx:else>{{p.t}}</text>
               </block>
             </block>
+            <block wx:if="{{md.qty != null || md.weight != null}}">
+              <text class="c-wh"> · </text>
+              <text class="c-match-qty">{{md.qty || 0}}件</text>
+              <text class="c-match-qty-sep"> / </text>
+              <text class="c-match-weight">{{md.weight || 0}}吨</text>
+            </block>
           </view>
         </view>
 
