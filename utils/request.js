@@ -1,17 +1,41 @@
 /**
  * API 地址切换（绑定页、所有接口都走 BASE_URL）
- * - false：本地后端，默认 http://127.0.0.1:3000（与 wms-backend app.js 默认端口一致）
+ * - false：本地后端
  * - true：生产云服务器
- * 真机预览时不能用 127.0.0.1，请改为电脑局域网 IP，如 http://192.168.1.8:3000
+ * 真机预览请把 API_BASE_LAN 改成电脑局域网 IP（与 PC 同一网段）
  */
-const USE_PRODUCTION_API = false;
-const API_BASE_LOCAL = "http://127.0.0.1:3000";
-const API_BASE_PROD = "http://114.67.203.242";
+const USE_PRODUCTION_API = true;
+const API_BASE_LOCALHOST = "http://localhost:3000";
+const API_BASE_LAN = "http://192.168.0.125:3000";
+const API_BASE_PROD = "https://erp.nbsmzwl.cn";
 
-const BASE_URL = USE_PRODUCTION_API ? API_BASE_PROD : API_BASE_LOCAL;
+function resolveLocalApiBase() {
+  try {
+    if (typeof wx !== "undefined" && wx.getSystemInfoSync) {
+      const platform = wx.getSystemInfoSync().platform;
+      if (platform === "devtools") return API_BASE_LOCALHOST;
+    }
+  } catch (_) { /* ignore */ }
+  return API_BASE_LAN;
+}
+
+const BASE_URL = USE_PRODUCTION_API ? API_BASE_PROD : resolveLocalApiBase();
 
 /** 无后端仅调界面时改为 true（不走网络） */
 const MOCK = false;
+
+/** 非开发者工具内运行（PC/手机预览、体验版）时，微信不允许访问未配置的 http 本地地址 */
+function networkFailHint(timedOut) {
+  try {
+    const env = wx.getAccountInfoSync().miniProgram.envVersion;
+    const platform = wx.getSystemInfoSync().platform;
+    if (env !== "develop" || (platform !== "devtools" && !USE_PRODUCTION_API)) {
+      return "预览/真机无法访问本地 http，请用模拟器调试，或改 USE_PRODUCTION_API / 配置 HTTPS 合法域名";
+    }
+  } catch (_) { /* ignore */ }
+  if (timedOut) return "连接超时，请确认后端已启动：" + BASE_URL;
+  return "网络错误，请确认后端与地址：" + BASE_URL;
+}
 
 // ===== 真实数据库结构 Mock 数据 =====
 
@@ -208,12 +232,20 @@ function generateJournal(productCode) {
   return records.reverse();
 }
 
-function paginate(rows, params) {
+function sortByDateDesc(rows, dateField) {
+  return rows.slice().sort((a, b) => {
+    const cmp = String(b[dateField] || "").localeCompare(String(a[dateField] || ""));
+    if (cmp !== 0) return cmp;
+    return (Number(b.id) || 0) - (Number(a.id) || 0);
+  });
+}
+
+function paginate(allRows, params) {
   const page = parseInt((params && params.page) || 1);
   const pageSize = parseInt((params && params.pageSize) || 15);
-  const total = rows.length;
+  const total = allRows.length;
   const start = (page - 1) * pageSize;
-  return { rows: rows.slice(start, start + pageSize), total, page, pageSize };
+  return { list: allRows.slice(start, start + pageSize), total, page, pageSize };
 }
 
 function mockResponse(path, params) {
@@ -240,6 +272,21 @@ function mockResponse(path, params) {
     };
   }
 
+  // === 账号密码登录（退出后重登，不走微信静默登录） ===
+  if (path === "/api/login") {
+    const { username, password } = params || {};
+    if (!username || !password) {
+      return { code: 400, message: "用户名和密码不能为空" };
+    }
+    return {
+      code: 200, message: "success",
+      data: {
+        token: "mock_token_" + Date.now(),
+        userInfo: { id: 1, username: username, nickname: username, roleCode: "ADMIN", roleName: "管理员", avatar: "" }
+      }
+    };
+  }
+
   // === 用户 ===
   if (path === "/api/user/profile") {
     return { code: 200, data: { id: 1, username: "admin", nickname: "管理员", roleCode: "ADMIN", roleName: "管理员", avatar: "" } };
@@ -250,17 +297,17 @@ function mockResponse(path, params) {
 
   // === 仓库列表 ===
   if (path === "/api/warehouse/list") {
-    return { code: 200, data: { rows: WAREHOUSES, total: WAREHOUSES.length } };
+    return { code: 200, data: { list: WAREHOUSES, total: WAREHOUSES.length } };
   }
 
   // === 供应商列表 ===
   if (path === "/api/supplier/list") {
-    return { code: 200, data: { rows: SUPPLIERS, total: SUPPLIERS.length } };
+    return { code: 200, data: { list: SUPPLIERS, total: SUPPLIERS.length } };
   }
 
   // === 客户列表 ===
   if (path === "/api/customer/list") {
-    return { code: 200, data: { rows: CUSTOMERS, total: CUSTOMERS.length } };
+    return { code: 200, data: { list: CUSTOMERS, total: CUSTOMERS.length } };
   }
 
   // === 库存列表 ===
@@ -279,14 +326,14 @@ function mockResponse(path, params) {
     const warehouseCode = (params && params.warehouse_code) || "";
     if (warehouseCode) rows = rows.filter(r => r.warehouse_code === warehouseCode);
     const p = paginate(rows, params);
-    return { code: 200, data: { rows: p.rows, total: p.total, page: p.page, pageSize: p.pageSize } };
+    return { code: 200, data: { list: p.list, total: p.total, page: p.page, pageSize: p.pageSize } };
   }
 
   // === 库存流水（字段对齐 stock_journal 表） ===
   if (path === "/api/stock/journal/list") {
     const productCode = (params && params.product_code) || "003";
     const records = generateJournal(productCode);
-    return { code: 200, data: { rows: records, total: records.length } };
+    return { code: 200, data: { list: records, total: records.length } };
   }
 
   // === 仓库汇总 ===
@@ -347,8 +394,9 @@ function mockResponse(path, params) {
     if (dateStart) rows = rows.filter(r => r.inbound_date >= dateStart);
     const dateEnd = (params && params.date_end) || "";
     if (dateEnd) rows = rows.filter(r => r.inbound_date <= dateEnd);
+    rows = sortByDateDesc(rows, "inbound_date");
     const p = paginate(rows, params);
-    return { code: 200, data: { rows: p.rows, total: p.total, page: p.page, pageSize: p.pageSize } };
+    return { code: 200, data: { list: p.list, total: p.total, page: p.page, pageSize: p.pageSize } };
   }
 
   // === 入库单详情 ===
@@ -403,8 +451,9 @@ function mockResponse(path, params) {
     if (dateStart) rows = rows.filter(r => r.outbound_date >= dateStart);
     const dateEnd = (params && params.date_end) || "";
     if (dateEnd) rows = rows.filter(r => r.outbound_date <= dateEnd);
+    rows = sortByDateDesc(rows, "outbound_date");
     const p = paginate(rows, params);
-    return { code: 200, data: { rows: p.rows, total: p.total, page: p.page, pageSize: p.pageSize } };
+    return { code: 200, data: { list: p.list, total: p.total, page: p.page, pageSize: p.pageSize } };
   }
 
   // === 出库单详情 ===
@@ -466,8 +515,10 @@ function mockResponse(path, params) {
   return { code: 404, message: "Mock 未实现: " + path };
 }
 
-/** 绑定页等业务错误由页面统一 toast，避免与全局「登录过期」混淆或重复提示 */
-const NO_GLOBAL_ERROR_TOAST = new Set(["/api/bind-openid"]);
+/** 登录相关接口由页面或 app 自行提示，避免与全局 toast / reLaunch 叠加 */
+const NO_GLOBAL_ERROR_TOAST = new Set(["/api/bind-openid", "/api/wx-login", "/api/user/profile"]);
+
+const REQUEST_TIMEOUT_MS = 20000;
 
 function request(method, url, data) {
   if (MOCK) {
@@ -479,7 +530,7 @@ function request(method, url, data) {
       url: BASE_URL + url,
       method,
       data,
-      timeout: 120000,
+      timeout: REQUEST_TIMEOUT_MS,
       header: {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + (wx.getStorageSync("token") || "")
@@ -491,9 +542,16 @@ function request(method, url, data) {
             reject(Object.assign({ code: 401, message: payload.message || "用户名或密码错误" }, payload));
             return;
           }
+          const hadToken = !!wx.getStorageSync("token");
           wx.removeStorageSync("token");
           wx.removeStorageSync("userInfo");
-          wx.showToast({ title: "登录已过期，请重新登录", icon: "none" });
+          if (hadToken && !skipGlobalToast) {
+            wx.showToast({ title: "登录已过期，请重新登录", icon: "none" });
+          }
+          if (url !== "/api/wx-login" && url !== "/api/user/profile") {
+            const { goLoginPage } = require("./auth");
+            goLoginPage();
+          }
           reject(Object.assign({ code: 401 }, payload.message ? payload : { message: "未登录或 token 无效" }));
           return;
         }
@@ -507,8 +565,19 @@ function request(method, url, data) {
         }
       },
       fail(err) {
-        wx.showToast({ title: "网络错误，请检查网络", icon: "none" });
-        reject(err);
+        const errMsg = (err && err.errMsg) || "";
+        const timedOut = /timeout/i.test(errMsg);
+        if (!skipGlobalToast) {
+          wx.showToast({
+            title: networkFailHint(timedOut),
+            icon: "none",
+            duration: 3500,
+          });
+        }
+        reject(Object.assign({}, err, {
+          message: timedOut ? "连接超时" : "网络错误",
+          timedOut,
+        }));
       }
     });
   });
@@ -516,6 +585,7 @@ function request(method, url, data) {
 
 module.exports = {
   BASE_URL,
+  MOCK,
   get: (url, params) => request("GET", url, params),
   post: (url, data) => request("POST", url, data),
   put: (url, data) => request("PUT", url, data),

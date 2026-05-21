@@ -1,0 +1,253 @@
+.page-journal {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.journal-header {
+  flex-shrink: 0;
+  padding: 16rpx 16rpx 8rpx;
+}
+
+.header-card {
+  background: linear-gradient(135deg, #409eff 0%, #66b1ff 100%);
+  border-radius: 20rpx;
+  padding: 28rpx 28rpx 26rpx;
+  box-shadow: 0 12rpx 36rpx rgba(64, 158, 255, 0.28);
+}
+
+.header-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.header-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.hdr-label {
+  flex-shrink: 0;
+  width: 132rpx;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 40rpx;
+}
+
+.hdr-value {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #fff;
+  line-height: 40rpx;
+  word-break: break-all;
+}
+
+.hdr-code {
+  font-family: SFMono-Regular, ui-monospace, monospace;
+  letter-spacing: 0.02em;
+}
+
+.hdr-name {
+  font-weight: 600;
+}
+
+.hdr-model {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.scroll-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.scroll-body--journal {
+  padding-top: 8rpx;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.list-stack {
+  padding-bottom: 8rpx;
+}
+
+.jr-card {
+  margin: 0 16rpx 16rpx;
+  padding: 24rpx 28rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 32rpx rgba(15, 23, 42, 0.06);
+  border: 1rpx solid rgba(228, 231, 237, 0.65);
+}
+
+.jr-r1 {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  overflow: hidden;
+}
+
+.jr-order {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #303133;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.jr-r2 {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #303133;
+  margin-top: 14rpx;
+}
+
+.jr-r3 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 24rpx;
+  color: #909399;
+  margin-top: 12rpx;
+}
+
+.jr-wh {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+}
+
+.jr-wh-label {
+  flex-shrink: 0;
+  color: #909399;
+}
+
+.jr-wh-val {
+  flex: 1;
+  min-width: 0;
+  color: #606266;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jr-time {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx dashed rgba(228, 231, 237, 0.95);
+}
+
+.jr-time-label {
+  display: block;
+  font-size: 22rpx;
+  color: #909399;
+  margin-bottom: 6rpx;
+}
+
+.jr-time-val {
+  font-size: 26rpx;
+  color: #606266;
+  font-weight: 500;
+}
+
+.jr-move {
+  margin-top: 16rpx;
+  padding: 20rpx 20rpx 18rpx;
+  border-radius: 12rpx;
+  background: rgba(64, 158, 255, 0.06);
+  border: 1rpx solid rgba(64, 158, 255, 0.18);
+}
+
+.jr-move-hd {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 12rpx;
+}
+
+.jr-move-title {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #303133;
+}
+
+.jr-move-hint {
+  font-size: 20rpx;
+  color: #909399;
+  flex-shrink: 0;
+}
+
+.jr-move-body {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.jr-move-qty,
+.jr-move-wt {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #303133;
+  letter-spacing: 0.02em;
+}
+
+.jr-move-unit {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #909399;
+}
+
+.jr-move-sep {
+  font-size: 26rpx;
+  color: #dcdfe6;
+  margin: 0 12rpx;
+}
+
+.jr-stock {
+  margin-top: 14rpx;
+  padding-top: 14rpx;
+  border-top: 1rpx dashed rgba(64, 158, 255, 0.22);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.jr-stock-label {
+  font-size: 22rpx;
+  color: #909399;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.4;
+}
+
+.jr-stock-val {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6rpx;
+  max-width: 62%;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #409eff;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.jr-stock-sep {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #dcdfe6;
+}

@@ -1,0 +1,115 @@
+.page-login {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: #f0f2f5;
+}
+
+.login-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 42vh;
+  background: linear-gradient(180deg, #409eff 0%, rgba(64, 158, 255, 0.08) 100%);
+  border-radius: 0 0 48rpx 48rpx;
+  pointer-events: none;
+}
+
+.login-shell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 100rpx 16rpx 48rpx;
+  box-sizing: border-box;
+}
+
+.login-auto-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.login-auto-tip-text {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.logo-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 48rpx;
+}
+
+.logo-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28rpx;
+  background: transparent;
+}
+
+.logo {
+  width: 152rpx;
+  height: 152rpx;
+}
+
+.app-name {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.subtitle {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 16rpx;
+}
+
+.form-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 12rpx 8rpx 40rpx;
+  box-shadow: 0 16rpx 48rpx rgba(15, 23, 42, 0.08);
+  border: 1rpx solid rgba(228, 231, 237, 0.85);
+}
+
+.field-divider {
+  height: 1rpx;
+  background: rgba(228, 231, 237, 0.95);
+  margin: 0 20rpx;
+}
+
+.login-field {
+  border-radius: 12rpx !important;
+}
+
+.btn-area {
+  margin-top: 48rpx;
+  padding: 0 20rpx;
+}
+
+.login-btn {
+  height: 96rpx !important;
+  font-size: 30rpx !important;
+  font-weight: 600 !important;
+  box-shadow: 0 12rpx 28rpx rgba(64, 158, 255, 0.35) !important;
+}
+
+.tips {
+  margin-top: 36rpx;
+  text-align: center;
+  padding: 0 24rpx;
+}
+
+.tips text {
+  font-size: 22rpx;
+  color: #909399;
+  line-height: 1.6;
+}

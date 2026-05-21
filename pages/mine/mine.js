@@ -1,4 +1,6 @@
 const request = require("../../utils/request");
+const { ensureLoggedInTab } = require("../../utils/auth");
+const { responseList } = require("../../utils/responseList");
 
 Page({
   data: {
@@ -13,6 +15,7 @@ Page({
   },
 
   onShow() {
+    if (!ensureLoggedInTab()) return;
     const tb = this.getTabBar && this.getTabBar();
     if (tb) tb.setData({ value: "mine" });
     const silent = this.data.loaded === true;
@@ -31,25 +34,23 @@ Page({
   async loadData(options = {}) {
     const silent = options.silent === true;
     try {
-      const [userRes, dashRes, whRes] = await Promise.all([
+      const results = await Promise.all([
         request.get("/api/user/profile"),
         request.get("/api/dashboard/analysis"),
         request.get("/api/stock/warehouse-summary"),
       ]);
+      const userRes = results[0];
+      const dashRes = results[1];
+      const whRes = results[2];
       const dashData = (dashRes && dashRes.data) || {};
       const whPayload = whRes && whRes.data;
-      const whData = Array.isArray(whPayload)
-        ? whPayload
-        : whPayload && Array.isArray(whPayload.list)
-          ? whPayload.list
-          : [];
       this.setData({
         userInfo: (userRes && userRes.data) || {},
         todayInbound: dashData.today_inbound ?? 0,
         todayOutbound: dashData.today_outbound ?? 0,
         totalSkuCount: dashData.total_sku_count ?? 0,
-        totalTonnage: +(dashData.total_tonnage ?? 0).toFixed(2),
-        warehouseList: Array.isArray(whData) ? whData : [],
+        totalTonnage: +Number(dashData.total_tonnage ?? 0).toFixed(2),
+        warehouseList: responseList(whPayload),
         loaded: true,
         loadError: false,
       });

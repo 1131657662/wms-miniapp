@@ -1,0 +1,112 @@
+page {
+  --van-primary-color: #409eff;
+  --van-success-color: #67c23a;
+  --van-warning-color: #e6a23c;
+  --van-danger-color: #f56c6c;
+  --van-text-color: #303133;
+  --van-text-color-weak: #909399;
+  --van-cell-font-size: 28rpx;
+  --van-cell-label-font-size: 22rpx;
+  --van-cell-label-color: #909399;
+  --van-cell-vertical-padding: 22rpx;
+  --van-cell-horizontal-padding: 28rpx;
+  --van-tag-border-radius: 8rpx;
+  --van-tag-font-weight: 500;
+  --van-card-background: #ffffff;
+  --van-card-padding: 24rpx 28rpx;
+  --van-tab-font-size: 28rpx;
+  --van-tab-active-text-color: #409eff;
+  --van-dropdown-menu-height: 88rpx;
+  --van-dropdown-menu-title-active-text-color: #409eff;
+  --van-grid-item-content-padding: 24rpx 16rpx;
+  --van-grid-item-text-font-size: 22rpx;
+  --van-grid-item-text-color: #606266;
+  --van-button-primary-background: #409eff;
+  --van-button-primary-border-color: #409eff;
+  --van-button-danger-background: #f56c6c;
+  --van-field-label-color: #303133;
+  --van-field-input-text-color: #303133;
+
+  --ui-page-bg: #f0f2f5;
+  --ui-card-bg: #ffffff;
+  --ui-radius: 16rpx;
+  --ui-radius-sm: 12rpx;
+  --ui-shadow: 0 8rpx 32rpx rgba(15, 23, 42, 0.06);
+  --ui-shadow-sm: 0 2rpx 12rpx rgba(15, 23, 42, 0.04);
+  --ui-border: 1rpx solid rgba(228, 231, 237, 0.9);
+
+  background-color: var(--ui-page-bg);
+  font-family: MiSans, -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
+  color: #303133;
+}
+
+.van-cell-group,
+.van-card {
+  border-radius: var(--ui-radius-sm);
+  overflow: hidden;
+  box-shadow: var(--ui-shadow-sm);
+}
+
+.van-card {
+  margin: 12rpx 16rpx;
+}
+
+.safe-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 列表卡片按压反馈（配合 hover-class） */
+.ui-card-hover {
+  opacity: 0.92;
+  transform: scale(0.992);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.ui-toolbar {
+  background: var(--ui-card-bg);
+  border-radius: 0 0 var(--ui-radius) var(--ui-radius);
+  box-shadow: var(--ui-shadow-sm);
+  overflow: hidden;
+  margin-bottom: 8rpx;
+}
+
+.ui-section-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #606266;
+  letter-spacing: 0.02em;
+  padding: 28rpx 16rpx 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.ui-section-title::before {
+  content: "";
+  width: 6rpx;
+  height: 26rpx;
+  border-radius: 6rpx;
+  background: linear-gradient(180deg, #409eff 0%, #66b1ff 100%);
+  flex-shrink: 0;
+}
+
+.ui-load-foot {
+  padding: 36rpx 24rpx 48rpx;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+}
+
+.ui-load-text {
+  font-size: 22rpx;
+  color: #909399;
+}
+
+.ui-load-retry {
+  color: #409eff;
+  font-weight: 500;
+}

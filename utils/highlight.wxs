@@ -1,0 +1,35 @@
+// WXS 关键词高亮模块
+// 用法: <wxs src="../../utils/highlight.wxs" module="hl" />
+//       <block wx:for="{{hl.parts(text, keyword)}}" wx:for-item="p">
+//         <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+//         <text wx:else>{{p.t}}</text>
+//       </block>
+
+function parts(text, keyword) {
+  if (!text) text = "";
+  if (!keyword || keyword === "") {
+    return [{ t: text, h: false }];
+  }
+  var result = [];
+  var lowerText = text.toLowerCase();
+  var lowerKw = keyword.toLowerCase();
+  var start = 0;
+  var idx = lowerText.indexOf(lowerKw, start);
+  while (idx !== -1) {
+    if (idx > start) {
+      result.push({ t: text.substring(start, idx), h: false });
+    }
+    result.push({ t: text.substring(idx, idx + keyword.length), h: true });
+    start = idx + keyword.length;
+    idx = lowerText.indexOf(lowerKw, start);
+  }
+  if (start < text.length) {
+    result.push({ t: text.substring(start), h: false });
+  }
+  if (result.length === 0) {
+    result.push({ t: text, h: false });
+  }
+  return result;
+}
+
+module.exports = { parts: parts };

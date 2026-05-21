@@ -1,0 +1,87 @@
+<wxs src="../../utils/journalFmt.wxs" module="fmt" />
+
+<view class="page page-journal">
+  <view class="journal-header">
+    <view class="header-card">
+      <view class="header-rows">
+        <view class="header-row">
+          <text class="hdr-label">产品编码</text>
+          <text class="hdr-value hdr-code">{{productCode}}</text>
+        </view>
+        <view class="header-row">
+          <text class="hdr-label">产品名称</text>
+          <text class="hdr-value hdr-name">{{productName}}</text>
+        </view>
+        <view class="header-row" wx:if="{{productModel}}">
+          <text class="hdr-label">型号</text>
+          <text class="hdr-value hdr-model">{{productModel}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view class="scroll-body scroll-body--journal" scroll-y>
+    <view wx:if="{{!empty}}" class="list-stack">
+      <view class="jr-card" wx:for="{{journalList}}" wx:key="id">
+        <view class="jr-r1">
+          <van-tag
+            color="{{item.business_type === 'inbound' ? '#67C23A' : item.business_type === 'outbound' ? '#409EFF' : '#E6A23C'}}"
+            text-color="#fff"
+            size="small"
+            round
+          >
+            {{item.business_type === 'inbound' ? '入库' : item.business_type === 'outbound' ? '出库' : '盘点'}}
+          </van-tag>
+          <text class="jr-order">{{item.order_no}}</text>
+        </view>
+        <view class="jr-wh" wx:if="{{item.warehouse_name}}">
+          <text class="jr-wh-label">仓库</text>
+          <text class="jr-wh-val">{{item.warehouse_name}}</text>
+        </view>
+        <view class="jr-r2">
+          <text wx:if="{{item.supplier_name}}">{{item.supplier_name}}</text>
+          <text wx:elif="{{item.customer_name}}">{{item.customer_name}}</text>
+          <text wx:else>-</text>
+        </view>
+        <view class="jr-r3">
+          <text>{{item.vehicle_no || '-'}}</text>
+          <text>{{item.container_no || '-'}}</text>
+        </view>
+        <view class="jr-time">
+          <text class="jr-time-label">业务时间</text>
+          <text class="jr-time-val">{{item.create_time}}</text>
+        </view>
+        <view class="jr-move">
+          <view class="jr-move-hd">
+            <text class="jr-move-title">本产品变动</text>
+            <text class="jr-move-hint">非整张单据合计</text>
+          </view>
+          <view class="jr-move-body">
+            <text class="jr-move-qty">{{item.change_qty}}</text>
+            <text class="jr-move-unit"> 件</text>
+            <text class="jr-move-sep">/</text>
+            <text class="jr-move-wt">{{fmt.changeWeightDisplay(item)}}</text>
+            <text class="jr-move-unit"> 吨</text>
+          </view>
+          <view class="jr-stock" wx:if="{{item.after_qty != null || item.after_weight != null}}">
+            <text class="jr-stock-label">变动后结存（本产品）</text>
+            <view class="jr-stock-val">
+              <block wx:if="{{item.after_qty != null}}">
+                <text>{{item.after_qty}} 件</text>
+              </block>
+              <text wx:if="{{item.after_qty != null && item.after_weight != null}}" class="jr-stock-sep">/</text>
+              <block wx:if="{{item.after_weight != null}}">
+                <text>{{item.after_weight}} 吨</text>
+              </block>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <van-empty wx:if="{{empty}}" description="暂无流水记录" />
+    <view class="ui-load-foot" wx:if="{{loading}}">
+      <van-loading size="40rpx" color="#409EFF" />
+      <text class="ui-load-text">加载中...</text>
+    </view>
+  </scroll-view>
+</view>

@@ -1,0 +1,8 @@
+{
+  "name": "wms-miniapp",
+  "version": "1.0.0",
+  "description": "茂智云仓微信小程序",
+  "dependencies": {
+    "@vant/weapp": "1.11.7"
+  }
+}

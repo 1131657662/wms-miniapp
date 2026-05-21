@@ -1,3 +1,5 @@
+const { responseList } = require("./responseList");
+
 /**
  * 入库/出库详情页：拉取打印模板、按所选模板生成 PDF 并打开
  */
@@ -17,10 +19,7 @@ function resolveBizKey(order, tmpl) {
 
 async function fetchTemplates(request, pageCode) {
   const tmplRes = await request.get(`/api/print/template/by-page/${pageCode}`);
-  const d = tmplRes.data;
-  if (Array.isArray(d?.list)) return d.list;
-  if (Array.isArray(d)) return d;
-  return [];
+  return responseList(tmplRes.data);
 }
 
 function downloadAndOpenPdf(BASE_URL, pdfUrl) {

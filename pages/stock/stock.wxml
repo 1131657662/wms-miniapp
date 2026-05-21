@@ -1,0 +1,129 @@
+<wxs src="../../utils/highlight.wxs" module="hl" />
+<wxs src="../../utils/alert.wxs" module="alert" />
+
+<view class="page page-stock">
+  <view class="ui-toolbar toolbar-stock">
+    <van-search
+      value="{{keyword}}"
+      placeholder="编码 / 名称 / 型号"
+      clearable
+      use-action-slot
+      bind:change="onSearch"
+      bind:search="onSubmitSearch"
+      bind:clear="onClearSearch"
+    >
+      <view
+        slot="action"
+        class="stock-search-action"
+        hover-class="stock-search-action--hover"
+        hover-stay-time="70"
+        bind:tap="onSubmitSearch"
+      >
+        搜索
+      </view>
+    </van-search>
+
+    <view class="stock-filter-panel">
+      <view class="stock-filter-inner">
+        <view class="stock-dd-cols">
+          <view class="stock-dd-col">
+            <van-dropdown-menu custom-class="stock-dd-menu-single" active-color="#409EFF">
+              <van-dropdown-item
+                title-class="stock-dd-title"
+                value="{{alertStatus}}"
+                options="{{statusOptions}}"
+                bind:change="onStatusChange"
+              />
+            </van-dropdown-menu>
+          </view>
+          <view class="stock-dd-col-gap" />
+          <view class="stock-dd-col">
+            <van-dropdown-menu custom-class="stock-dd-menu-single" active-color="#409EFF">
+              <van-dropdown-item
+                title-class="stock-dd-title"
+                value="{{warehouseCode}}"
+                options="{{warehouseOptions}}"
+                bind:change="onWarehouseChange"
+              />
+            </van-dropdown-menu>
+          </view>
+        </view>
+        <view class="stock-filter-divider" />
+        <view
+          class="stock-clear-all"
+          hover-class="stock-clear-all--hover"
+          hover-stay-time="70"
+          bind:tap="onClearAll"
+        >
+          <text class="stock-clear-all-text">清空全部</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view
+    class="scroll-body scroll-body--pad"
+    scroll-y
+    scroll-top="{{scrollTop}}"
+    refresher-default-style="black"
+    bindscrolltolower="onScrollToLower"
+    lower-threshold="100"
+    refresher-enabled
+    refresher-triggered="{{refreshing}}"
+    bindrefresherrefresh="onRefresh"
+  >
+    <view wx:if="{{!empty}}" class="list-stack">
+      <view
+        class="card card-stock"
+        hover-class="ui-card-hover"
+        hover-stay-time="100"
+        wx:for="{{stockList}}"
+        wx:key="*this"
+        bind:tap="onTapCard"
+        bind:longpress="onLongPressCard"
+        data-code="{{item.product_code}}"
+        data-name="{{item.product_name}}"
+        data-model="{{item.product_model}}"
+        data-warehouse="{{item.warehouse_name}}"
+        data-qty="{{item.stock_qty}}"
+        data-weight="{{item.stock_weight}}"
+      >
+        <view class="cr1">
+          <van-tag type="{{alert.typeForAlert(item.alert_status)}}" size="small" custom-class="cr1-tag">{{item.alert_status}}</van-tag>
+          <text class="cr1-code">{{item.product_code}}</text>
+          <view class="cr1-name">
+            <block wx:for="{{hl.parts(item.product_name, keyword)}}" wx:for-item="p">
+              <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+              <text wx:else>{{p.t}}</text>
+            </block>
+          </view>
+          <view class="cr1-right">
+            <text class="n-val">{{item.stock_qty}}</text><text class="n-unit">件</text>
+            <text class="n-div">/</text>
+            <text class="n-val">{{item.stock_weight}}</text><text class="n-unit">吨</text>
+          </view>
+        </view>
+        <view class="cr2">
+          <text>{{item.product_model}}</text>
+          <text class="sep">|</text>
+          <text>{{item.warehouse_name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <van-empty wx:if="{{empty}}" description="暂无库存数据">
+      <van-button slot="bottom" size="small" type="primary" round bind:tap="onClearAll">清空全部条件</van-button>
+    </van-empty>
+    <view class="ui-load-foot" wx:if="{{loadError}}">
+      <text class="ui-load-text ui-load-retry" bind:tap="onRetryLoad">加载失败，点此重试</text>
+    </view>
+    <view class="ui-load-foot" wx:elif="{{loading}}">
+      <van-loading size="40rpx" color="#409EFF" />
+      <text class="ui-load-text">加载中...</text>
+    </view>
+    <view class="ui-load-foot" wx:elif="{{!hasMore && !empty}}">
+      <van-icon name="checked" size="28rpx" color="#67C23A" />
+      <text class="ui-load-text">已加载全部 {{total}} 条</text>
+    </view>
+  </scroll-view>
+</view>

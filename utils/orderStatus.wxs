@@ -1,0 +1,47 @@
+function trim(s) {
+  var str = "" + (s || "");
+  var i = 0;
+  var j = str.length - 1;
+  while (i <= j && str.charAt(i) === " ") {
+    i++;
+  }
+  while (j >= i && str.charAt(j) === " ") {
+    j--;
+  }
+  if (i > j) {
+    return "";
+  }
+  return str.substring(i, j + 1);
+}
+
+function norm(s) {
+  var t = trim(s);
+  if (t.length === 0) {
+    return "";
+  }
+  return t.toLowerCase();
+}
+
+function labelForStatus(s) {
+  var st = norm(s);
+  if (st === "draft") return "草稿";
+  if (st === "submit") return "待审核";
+  if (st === "audited") return "已审核";
+  if (st === "completed") return "已完成";
+  if (st === "cancelled") return "已取消";
+  if (st.length > 0) return trim(s);
+  return "-";
+}
+
+function colorForStatus(s) {
+  var st = norm(s);
+  if (st === "draft") return "#909399";
+  if (st === "submit") return "#E6A23C";
+  if (st === "audited") return "#67C23A";
+  if (st === "completed") return "#409EFF";
+  if (st === "cancelled") return "#F56C6C";
+  return "#909399";
+}
+
+module.exports.labelForStatus = labelForStatus;
+module.exports.colorForStatus = colorForStatus;

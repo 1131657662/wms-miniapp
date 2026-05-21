@@ -1,0 +1,26 @@
+function trim(s) {
+  var str = "" + (s || "");
+  var i = 0;
+  var j = str.length - 1;
+  while (i <= j && str.charAt(i) === " ") {
+    i++;
+  }
+  while (j >= i && str.charAt(j) === " ") {
+    j--;
+  }
+  if (i > j) {
+    return "";
+  }
+  return str.substring(i, j + 1);
+}
+
+function typeForAlert(status) {
+  var st = trim(status);
+  if (st === "零库存") return "default";
+  if (st === "低库存") return "danger";
+  if (st === "高库存") return "warning";
+  if (st === "正常") return "success";
+  return "default";
+}
+
+module.exports.typeForAlert = typeForAlert;

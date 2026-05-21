@@ -1,0 +1,20 @@
+<view class="page page-account">
+  <view class="account-hero">
+    <view class="user-card">
+      <view class="avatar">{{userInfo.nickname ? userInfo.nickname[0] : '用'}}</view>
+      <view class="user-info">
+        <view class="nickname">{{userInfo.nickname || userInfo.username || '用户'}}</view>
+        <view class="role">{{userInfo.roleName || '普通用户'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="ui-section-title">账号设置</view>
+  <van-cell-group custom-class="account-group" inset="{{false}}">
+    <van-cell title="修改密码" icon="lock" is-link bind:tap="onChangePassword" />
+    <van-cell title="切换账号" icon="exchange" is-link bind:tap="onSwitchAccount" />
+    <van-cell title="退出登录" icon="revoke" is-link bind:tap="onLogout" />
+  </van-cell-group>
+
+  <view class="safe-bottom" />
+</view>

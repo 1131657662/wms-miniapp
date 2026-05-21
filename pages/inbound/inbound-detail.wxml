@@ -1,0 +1,114 @@
+<!-- 单根节点，避免部分基础库对双根 wx:if/wx:else 触发异常或内部超时 -->
+<view class="detail-root">
+  <wxs src="../../utils/orderStatus.wxs" module="os" />
+  <view wx:if="{{!loaded}}" class="page page-detail detail-loading">
+    <van-loading size="48rpx" color="#409EFF" />
+    <text class="detail-loading-text">加载单据...</text>
+  </view>
+
+  <view wx:elif="{{loadError}}" class="page page-detail detail-fail">
+    <van-empty description="加载失败，请检查网络或稍后重试" />
+    <view class="detail-fail-actions">
+      <van-button type="primary" size="small" round bind:tap="onReloadDetail">重新加载</van-button>
+      <van-button size="small" plain round custom-class="detail-fail-back" bind:tap="onBack">返回</van-button>
+    </view>
+  </view>
+
+  <view wx:else class="page page-detail detail-loaded">
+    <view class="detail-hero">
+      <view class="detail-hero-top">
+        <text class="detail-hero-no">{{order.order_no}}</text>
+        <van-tag color="{{os.colorForStatus(order.order_status)}}" text-color="#fff" round>{{os.labelForStatus(order.order_status)}}</van-tag>
+      </view>
+      <view class="detail-hero-meta">
+        <text>{{order.inbound_date}}</text>
+        <text class="detail-hero-dot">·</text>
+        <text class="detail-hero-ellipsis">{{order.warehouse_name}}</text>
+      </view>
+      <view class="detail-hero-supplier" wx:if="{{order.supplier_name}}">
+        <text class="detail-hero-supplier-label">供应商</text>
+        <text class="detail-hero-supplier-name">{{order.supplier_name}}</text>
+      </view>
+    </view>
+
+    <view class="detail-section">
+      <view class="ui-section-title">单据信息</view>
+      <van-cell-group custom-class="detail-group" inset="{{false}}">
+        <van-cell title="入库单号" value="{{order.order_no}}" />
+        <van-cell title="入库日期" value="{{order.inbound_date}}" />
+        <van-cell title="仓库" value="{{order.warehouse_name}}" />
+        <van-cell title="供应商" value="{{order.supplier_name}}" />
+        <van-cell title="车号" value="{{order.vehicle_no || '-'}}" />
+        <van-cell title="柜号" value="{{order.container_no || '-'}}" />
+        <van-cell title="状态">
+          <van-tag slot="right-icon" color="{{os.colorForStatus(order.order_status)}}" text-color="#fff" round>
+            {{os.labelForStatus(order.order_status)}}
+          </van-tag>
+        </van-cell>
+        <van-cell title="备注" value="{{order.remark || '-'}}" wx:if="{{order.remark}}" />
+      </van-cell-group>
+    </view>
+
+    <view class="detail-section">
+      <view class="ui-section-title">入库明细（{{items.length}} 项）</view>
+      <view wx:if="{{items.length > 0}}" class="detail-items">
+        <view class="item-card" wx:for="{{items}}" wx:for-index="idx" wx:key="*this">
+          <view class="item-card-accent" />
+          <view class="item-card-body">
+            <view class="item-card-hd">
+              <text class="item-idx">{{idx + 1}}</text>
+              <view class="i-title-block">
+                <view class="i-r1">
+                  <text class="i-code">{{item.product_code}}</text>
+                  <text class="i-title-dot">·</text>
+                  <text class="i-name">{{item.product_name}}</text>
+                </view>
+                <view class="i-r2" wx:if="{{item.product_model}}">
+                  <text class="i-model-label">型号</text>
+                  <text class="i-model-val">{{item.product_model}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="i-r3">
+              <text class="i-r3-label">本行</text>
+              <text class="i-nums">{{item.inbound_qty}} 件 / {{item.inbound_weight}} 吨</text>
+            </view>
+            <view class="i-r4" wx:if="{{item.remark}}">{{item.remark}}</view>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="empty-inline">
+        <van-empty description="暂无明细" />
+      </view>
+    </view>
+
+    <view class="detail-section detail-footer-wrap">
+      <view class="ui-section-title ui-section-title--tight">明细汇总</view>
+      <view class="footer-bar">
+        <view class="footer-block">
+          <text class="footer-label">总件数</text>
+          <text class="footer-val">{{totalQty}}</text>
+        </view>
+        <view class="footer-gap" />
+        <view class="footer-block">
+          <text class="footer-label">总吨位</text>
+          <text class="footer-val">{{totalWeight}} 吨</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="print-area">
+      <van-button type="primary" block round custom-class="print-btn" bind:tap="onPrint">打印</van-button>
+    </view>
+
+    <view class="safe-bottom" />
+  </view>
+
+  <van-action-sheet
+    show="{{printSheetShow}}"
+    title="选择打印模板"
+    actions="{{printSheetActions}}"
+    bind:close="onPrintSheetClose"
+    bind:select="onPrintSheetSelect"
+  />
+</view>

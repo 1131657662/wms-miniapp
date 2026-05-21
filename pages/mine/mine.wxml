@@ -1,0 +1,90 @@
+<view class="page page-mine">
+  <view wx:if="{{!loaded}}" class="mine-loading">
+    <van-loading size="48rpx" color="#409EFF" />
+    <text class="mine-loading-text">加载工作台...</text>
+  </view>
+
+  <block wx:else>
+    <view wx:if="{{loadError}}" class="mine-error-bar" bind:tap="onRetryLoad">
+      <van-icon name="warning-o" size="32rpx" color="#E6A23C" />
+      <text class="mine-error-text">数据加载失败，点击重试</text>
+      <van-icon name="replay" size="28rpx" color="#409EFF" />
+    </view>
+
+    <view class="mine-hero">
+      <view class="user-card" hover-class="ui-card-hover" hover-stay-time="100" bind:tap="onTapUser">
+        <view class="avatar">{{userInfo.nickname ? userInfo.nickname[0] : '用'}}</view>
+        <view class="user-info">
+          <view class="nickname">{{userInfo.nickname || userInfo.username || '用户'}}</view>
+          <view class="role">{{userInfo.roleName || userInfo.roleCode || '普通用户'}}</view>
+        </view>
+        <van-icon name="arrow" size="32rpx" color="rgba(255,255,255,0.65)" />
+      </view>
+    </view>
+
+    <view class="kpi-panel">
+      <view class="kpi-panel-hd">
+        <text class="kpi-panel-title">今日概览</text>
+        <text class="kpi-panel-sub">入库 / 出库吨位 · SKU 与库存总览</text>
+      </view>
+      <view class="kpi-grid">
+        <view class="kpi-cell">
+          <view class="kpi-cell-top">
+            <view class="kpi-dot kpi-dot--in" />
+            <text class="kpi-label">今日入库</text>
+          </view>
+          <text class="kpi-val">{{todayInbound > 0 ? todayInbound + ' 吨' : '——'}}</text>
+        </view>
+        <view class="kpi-cell">
+          <view class="kpi-cell-top">
+            <view class="kpi-dot kpi-dot--out" />
+            <text class="kpi-label">今日出库</text>
+          </view>
+          <text class="kpi-val">{{todayOutbound > 0 ? todayOutbound + ' 吨' : '——'}}</text>
+        </view>
+        <view class="kpi-cell">
+          <view class="kpi-cell-top">
+            <view class="kpi-dot kpi-dot--sku" />
+            <text class="kpi-label">总 SKU</text>
+          </view>
+          <text class="kpi-val">{{totalSkuCount > 0 ? totalSkuCount + ' 个' : '——'}}</text>
+        </view>
+        <view class="kpi-cell">
+          <view class="kpi-cell-top">
+            <view class="kpi-dot kpi-dot--ton" />
+            <text class="kpi-label">总吨位</text>
+          </view>
+          <text class="kpi-val">{{totalTonnage > 0 ? totalTonnage + ' 吨' : '——'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="ui-section-title section-mine-tight">仓库实时库存</view>
+    <scroll-view class="wh-scroll" scroll-x wx:if="{{warehouseList.length > 0}}">
+      <view class="wh-track">
+        <view class="wh-card" wx:for="{{warehouseList}}" wx:key="warehouse_code">
+          <view class="wh-card-top">
+            <view class="wh-dot" />
+            <view class="wh-name">{{item.warehouse_name}}</view>
+          </view>
+          <view class="wh-stat">{{item.total_qty || 0}} 件</view>
+          <view class="wh-stat muted">{{item.total_weight || 0}} 吨</view>
+        </view>
+      </view>
+    </scroll-view>
+    <view wx:else class="empty-wrap">
+      <van-empty description="暂无仓库汇总数据" />
+    </view>
+
+    <view class="ui-section-title">常用功能</view>
+    <van-cell-group custom-class="mine-menu-group" inset="{{false}}">
+      <van-cell title="账号与安全" label="密码、切换账号与退出登录" icon="user-o" is-link bind:tap="onTapUser" />
+    </van-cell-group>
+
+    <view class="mine-footer">
+      <text class="version">v1.0.0</text>
+    </view>
+
+    <view class="safe-bottom" />
+  </block>
+</view>

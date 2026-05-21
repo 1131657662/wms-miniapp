@@ -1,0 +1,13 @@
+.tab-bar-shell {
+  background: #fff;
+}
+
+.tab-bar {
+  box-shadow: 0 -4rpx 24rpx rgba(15, 23, 42, 0.06) !important;
+  border-top: 1rpx solid rgba(228, 231, 237, 0.85) !important;
+}
+
+.safe-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}

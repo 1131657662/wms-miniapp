@@ -1,0 +1,50 @@
+<view class="page page-login">
+  <view class="login-bg" />
+
+  <view class="login-shell">
+    <view wx:if="{{autoChecking}}" class="login-auto-tip">
+      <van-loading size="20px" color="#409EFF" />
+      <text class="login-auto-tip-text">正在校验微信登录…</text>
+    </view>
+
+    <view class="logo-area">
+      <view class="logo-ring">
+        <image class="logo" src="/static/maozhi-logo.png" mode="aspectFit" />
+      </view>
+      <text class="app-name">茂智云仓</text>
+      <text class="subtitle">{{mode === 'login' ? '请登录系统账号' : '绑定已有系统账号'}}</text>
+    </view>
+
+    <view class="form-card">
+      <van-field
+        value="{{username}}"
+        label="用户名"
+        placeholder="请输入用户名"
+        left-icon="contact"
+        border="{{false}}"
+        custom-class="login-field"
+        bind:change="onUsernameInput"
+      />
+      <view class="field-divider" />
+      <van-field
+        value="{{password}}"
+        label="密码"
+        type="password"
+        placeholder="请输入密码"
+        left-icon="lock"
+        border="{{false}}"
+        custom-class="login-field"
+        bind:change="onPasswordInput"
+      />
+
+      <view class="btn-area">
+        <van-button type="primary" block round loading="{{loading}}" custom-class="login-btn" bind:tap="handleSubmit">{{mode === 'login' ? '登录' : '绑定账号'}}</van-button>
+      </view>
+
+      <view class="tips">
+        <text wx:if="{{mode === 'bind'}}">首次使用需将微信与茂智云仓系统账号绑定</text>
+        <text wx:else>请输入您的茂智云仓系统账号和密码</text>
+      </view>
+    </view>
+  </view>
+</view>

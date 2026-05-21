@@ -1,0 +1,64 @@
+.page-account {
+  min-height: 100vh;
+  background: #f0f2f5;
+  box-sizing: border-box;
+}
+
+.account-hero {
+  padding: 24rpx 16rpx 8rpx;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 36rpx 28rpx;
+  background: linear-gradient(135deg, #409eff 0%, #66b1ff 52%, #79bbff 100%);
+  border-radius: 20rpx;
+  box-shadow: 0 12rpx 40rpx rgba(64, 158, 255, 0.32);
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  border: 2rpx solid rgba(255, 255, 255, 0.35);
+  color: #fff;
+  font-size: 38rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nickname {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+.role {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.88);
+  margin-top: 10rpx;
+}
+
+.account-group {
+  margin: 0 16rpx !important;
+  border-radius: 16rpx !important;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(15, 23, 42, 0.06) !important;
+  border: 1rpx solid rgba(228, 231, 237, 0.65) !important;
+}
+
+.safe-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}

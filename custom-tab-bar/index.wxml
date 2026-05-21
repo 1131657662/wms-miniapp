@@ -1,0 +1,13 @@
+<view class="tab-bar-shell safe-bottom">
+  <van-tabbar
+    active="{{value}}"
+    active-color="#409eff"
+    inactive-color="#909399"
+    custom-class="tab-bar"
+    bind:change="onChange"
+  >
+    <van-tabbar-item wx:for="{{list}}" wx:key="value" name="{{item.value}}" icon="{{item.icon}}">
+      {{item.label}}
+    </van-tabbar-item>
+  </van-tabbar>
+</view>

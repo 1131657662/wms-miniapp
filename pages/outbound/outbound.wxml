@@ -1,0 +1,224 @@
+<wxs src="../../utils/highlight.wxs" module="hl" />
+<wxs src="../../utils/orderStatus.wxs" module="os" />
+
+<view class="page page-order">
+  <view class="ui-toolbar toolbar-order outbound-toolbar">
+    <van-search
+      value="{{keyword}}"
+      placeholder="单号 / 车号 / 客户 / 产品..."
+      clearable
+      use-action-slot
+      bind:change="onSearch"
+      bind:search="onSubmitSearch"
+      bind:clear="onClearSearch"
+    >
+      <view
+        slot="action"
+        class="outbound-search-action"
+        hover-class="outbound-search-action--hover"
+        hover-stay-time="70"
+        bind:tap="onSubmitSearch"
+      >
+        搜索
+      </view>
+    </van-search>
+
+    <view class="outbound-toolbar-panel">
+      <view class="outbound-tabs-wrap">
+        <van-tabs
+          wx:if="{{tabsReady}}"
+          scrollable
+          active="{{orderStatus}}"
+          custom-class="outbound-tabs"
+          bind:change="onTabChange"
+        >
+          <van-tab name="all" title="全部" />
+          <van-tab name="draft" title="草稿" />
+          <van-tab name="submit" title="待审核" />
+          <van-tab name="audited" title="已审核" />
+          <van-tab name="completed" title="已完成" />
+          <van-tab name="cancelled" title="已取消" />
+        </van-tabs>
+      </view>
+
+      <view class="outbound-filter-strip">
+        <view class="outbound-strip-btns">
+          <van-button
+            plain
+            size="small"
+            icon="filter-o"
+            round
+            custom-class="outbound-strip-btn {{warehouseCode || customerCode ? 'has-filter' : ''}}"
+            bind:tap="onOpenFilter"
+          >
+            筛选
+          </van-button>
+          <van-button
+            plain
+            size="small"
+            icon="calendar-o"
+            round
+            custom-class="outbound-strip-btn {{dateStart || dateEnd ? 'has-filter' : ''}}"
+            bind:tap="onOpenCalendar"
+          >
+            日期
+          </van-button>
+        </view>
+        <view class="outbound-strip-divider" />
+        <view
+          class="outbound-clear-all"
+          hover-class="outbound-clear-all--hover"
+          hover-stay-time="70"
+          bind:tap="onClearAll"
+        >
+          <text class="outbound-clear-all-text">清空全部</text>
+        </view>
+      </view>
+
+      <view wx:if="{{warehouseName || customerName || dateStart || dateEnd}}" class="outbound-tag-row">
+        <van-tag wx:if="{{warehouseName}}" color="#ecf5ff" text-color="#409EFF" size="medium" round>{{warehouseName}}</van-tag>
+        <van-tag wx:if="{{customerName}}" color="#ecf5ff" text-color="#409EFF" size="medium" round>{{customerName}}</van-tag>
+        <van-tag wx:if="{{dateStart || dateEnd}}" color="#ecf5ff" text-color="#409EFF" size="medium" closeable round bind:close="onClearDate">{{dateRangeLabel}}</van-tag>
+      </view>
+    </view>
+  </view>
+
+  <van-action-sheet show="{{showActionSheet}}" actions="{{actionSheetActions}}" bind:close="onActionClose" bind:select="onActionSelect" />
+
+  <scroll-view
+    class="scroll-body scroll-body--pad"
+    scroll-y
+    scroll-top="{{scrollTop}}"
+    bindscrolltolower="onScrollToLower"
+    lower-threshold="100"
+    refresher-enabled
+    refresher-triggered="{{refreshing}}"
+    bindrefresherrefresh="onRefresh"
+  >
+    <view wx:if="{{keyword}}" class="outbound-result-tip">
+      <van-icon name="info-o" size="28rpx" color="#409EFF" />
+      <view class="outbound-result-tip-text">
+        关键词
+        <text class="outbound-result-tip-kw">{{keyword}}</text>
+        会匹配单号、客户、车号、柜号及明细商品。卡片上的件数/吨位为整张出库单合计；若因明细命中搜到本单，请留意下方「明细命中」区域。
+      </view>
+    </view>
+
+    <view wx:if="{{!empty}}" class="list-stack">
+      <view
+        class="card card-order"
+        hover-class="ui-card-hover"
+        hover-stay-time="100"
+        wx:for="{{list}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bind:tap="onTapCard"
+      >
+        <view class="c-r1">
+          <view class="c-no">
+            <block wx:for="{{hl.parts(item.order_no, keyword)}}" wx:for-item="p">
+              <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+              <text wx:else>{{p.t}}</text>
+            </block>
+            <text class="c-wh"> · </text>
+            <block wx:for="{{hl.parts(item.warehouse_name, keyword)}}" wx:for-item="p">
+              <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+              <text wx:else class="c-wh">{{p.t}}</text>
+            </block>
+          </view>
+          <van-tag color="{{os.colorForStatus(item.order_status)}}" text-color="#fff" size="small" round>{{os.labelForStatus(item.order_status)}}</van-tag>
+        </view>
+
+        <view class="c-match-section" wx:if="{{item.match_details && item.match_details.length > 0}}">
+          <view class="c-match-section-hd">
+            <text class="c-match-badge">明细命中</text>
+            <text class="c-match-count">命中明细 {{item.match_details.length}} 条</text>
+          </view>
+          <view class="c-match-line">
+            <block wx:for="{{hl.parts(item.match_details[0].product_code, keyword)}}" wx:for-item="p">
+              <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+              <text wx:else>{{p.t}}</text>
+            </block>
+            <text class="c-wh"> · </text>
+            <block wx:for="{{hl.parts(item.match_details[0].product_name, keyword)}}" wx:for-item="p">
+              <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+              <text wx:else>{{p.t}}</text>
+            </block>
+          </view>
+          <view class="c-match-model" wx:if="{{item.match_details[0].product_model}}">
+            <text class="c-match-model-label">型号 </text>
+            <block wx:for="{{hl.parts(item.match_details[0].product_model, keyword)}}" wx:for-item="p">
+              <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+              <text wx:else>{{p.t}}</text>
+            </block>
+          </view>
+        </view>
+
+        <view class="c-r2">
+          <text class="c-meta-lab">客户</text>
+          <view class="c-meta-val">
+            <block wx:for="{{hl.parts(item.customer_name, keyword)}}" wx:for-item="p">
+              <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+              <text wx:else>{{p.t}}</text>
+            </block>
+          </view>
+        </view>
+        <view class="c-r3">
+          <view class="c-r3-pair">
+            <text class="c-meta-lab c-meta-lab--row">车号</text>
+            <text class="c-r3-val">
+              <block wx:for="{{hl.parts(item.vehicle_no || '-', keyword)}}" wx:for-item="p">
+                <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+                <text wx:else>{{p.t}}</text>
+              </block>
+            </text>
+          </view>
+          <view class="c-r3-pair c-r3-pair--end">
+            <text class="c-meta-lab c-meta-lab--row">柜号</text>
+            <text class="c-r3-val c-r3-val--end">
+              <block wx:for="{{hl.parts(item.container_no || '-', keyword)}}" wx:for-item="p">
+                <text wx:if="{{p.h}}" class="hl">{{p.t}}</text>
+                <text wx:else>{{p.t}}</text>
+              </block>
+            </text>
+          </view>
+        </view>
+        <view class="c-r4">
+          <view class="c-r4-block">
+            <text class="c-meta-lab c-meta-lab--stack">本单合计</text>
+            <text class="c-nums">{{item.total_qty}} 件 / {{item.total_weight}} 吨</text>
+          </view>
+          <view class="c-r4-block c-r4-block--right">
+            <text class="c-meta-lab c-meta-lab--stack">出库日期</text>
+            <text class="c-date">{{item.outbound_date}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <van-empty wx:if="{{empty}}" description="暂无出库单">
+      <van-button slot="bottom" size="small" type="primary" round bind:tap="onClearAll">清空全部条件</van-button>
+    </van-empty>
+    <view class="ui-load-foot" wx:if="{{loadError}}">
+      <text class="ui-load-text ui-load-retry" bind:tap="onRetryLoad">加载失败，点此重试</text>
+    </view>
+    <view class="ui-load-foot" wx:elif="{{loading}}">
+      <van-loading size="40rpx" color="#409EFF" />
+      <text class="ui-load-text">加载中...</text>
+    </view>
+    <view class="ui-load-foot" wx:elif="{{!hasMore && !empty}}">
+      <van-icon name="passed" size="28rpx" color="#c0c4cc" />
+      <text class="ui-load-text">已加载全部 {{total}} 条</text>
+    </view>
+  </scroll-view>
+
+  <van-calendar
+    show="{{showCalendar}}"
+    type="range"
+    min-date="{{minDate}}"
+    max-date="{{maxDate}}"
+    bind:close="onCloseCalendar"
+    bind:confirm="onConfirmDate"
+    color="#409EFF"
+  />
+</view>
