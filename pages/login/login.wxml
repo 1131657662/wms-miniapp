@@ -11,7 +11,7 @@
       <view class="logo-ring">
         <image class="logo" src="/static/maozhi-logo.png" mode="aspectFit" />
       </view>
-      <text class="app-name">茂智云仓</text>
+      <text class="app-name">茂智腈纶助手</text>
       <text class="subtitle">{{mode === 'login' ? '请登录系统账号' : '绑定已有系统账号'}}</text>
     </view>
 
@@ -42,8 +42,8 @@
       </view>
 
       <view class="tips">
-        <text wx:if="{{mode === 'bind'}}">首次使用需将微信与茂智云仓系统账号绑定</text>
-        <text wx:else>请输入您的茂智云仓系统账号和密码</text>
+        <text wx:if="{{mode === 'bind'}}">首次使用需将微信与茂智腈纶助手系统账号绑定</text>
+        <text wx:else>请输入您的茂智腈纶助手系统账号和密码</text>
       </view>
     </view>
   </view>

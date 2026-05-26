@@ -206,4 +206,14 @@ Page({
     const m = { draft: "#909399", submit: "#E6A23C", audited: "#67C23A", completed: "#409EFF", cancelled: "#F56C6C" };
     return m[s] || "#909399";
   },
+
+  onShareAppMessage() {
+    return {
+      title: "茂智腈纶助手 - 入库单",
+      path: "/pages/inbound/inbound"
+    };
+  },
+  onShareTimeline() {
+    return { title: "茂智腈纶助手 - 入库单", query: "" };
+  },
 });

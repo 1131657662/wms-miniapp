@@ -126,4 +126,21 @@ Page({
     const m = { draft: "#909399", submit: "#E6A23C", audited: "#67C23A", completed: "#409EFF", cancelled: "#F56C6C" };
     return m[s] || "#909399";
   },
+
+  onShareAppMessage() {
+    const { order, detailId } = this.data;
+    const orderNo = order.order_no || order.outbound_no || detailId || "";
+    return {
+      title: `出库单 ${orderNo}`,
+      path: `/pages/outbound/outbound-detail?id=${detailId}`
+    };
+  },
+  onShareTimeline() {
+    const { order, detailId } = this.data;
+    const orderNo = order.order_no || order.outbound_no || detailId || "";
+    return {
+      title: `出库单 ${orderNo}`,
+      query: `id=${detailId}`
+    };
+  },
 });

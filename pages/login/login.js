@@ -124,4 +124,14 @@ Page({
       this.setData({ loading: false });
     }
   },
+
+  onShareAppMessage() {
+    return {
+      title: "茂智腈纶助手",
+      path: "/pages/login/login"
+    };
+  },
+  onShareTimeline() {
+    return { title: "茂智腈纶助手", query: "" };
+  },
 });

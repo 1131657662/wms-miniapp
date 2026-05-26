@@ -13,7 +13,8 @@
 
     <view class="mine-hero">
       <view class="user-card" hover-class="ui-card-hover" hover-stay-time="100" bind:tap="onTapUser">
-        <view class="avatar">{{userInfo.nickname ? userInfo.nickname[0] : '用'}}</view>
+        <image wx:if="{{userInfo.avatar}}" class="avatar avatar-img" src="{{userInfo.avatar}}" mode="aspectFill" />
+        <view wx:else class="avatar">{{userInfo.nickname ? userInfo.nickname[0] : '用'}}</view>
         <view class="user-info">
           <view class="nickname">{{userInfo.nickname || userInfo.username || '用户'}}</view>
           <view class="role">{{userInfo.roleName || userInfo.roleCode || '普通用户'}}</view>

@@ -25,4 +25,21 @@ Page({
       },
     });
   },
+
+  onShareAppMessage() {
+    const userInfo = this.data.userInfo || {};
+    const name = userInfo.realname || userInfo.username || "";
+    return {
+      title: name ? `${name} - 茂智腈纶助手` : "茂智腈纶助手 - 账户设置",
+      path: "/pages/account/account"
+    };
+  },
+  onShareTimeline() {
+    const userInfo = this.data.userInfo || {};
+    const name = userInfo.realname || userInfo.username || "";
+    return {
+      title: name ? `${name} - 茂智腈纶助手` : "茂智腈纶助手 - 账户设置",
+      query: ""
+    };
+  },
 });

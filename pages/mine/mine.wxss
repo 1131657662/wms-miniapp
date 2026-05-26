@@ -64,6 +64,9 @@
   justify-content: center;
   flex-shrink: 0;
 }
+.avatar-img {
+  background: transparent;
+}
 
 .user-info {
   margin-left: 24rpx;

@@ -111,4 +111,14 @@ Page({
     const m = { "零库存": "default", "低库存": "danger", "高库存": "warning", "正常": "success" };
     return m[s] || "default";
   },
+
+  onShareAppMessage() {
+    return {
+      title: "茂智腈纶助手 - 库存查询",
+      path: "/pages/stock/stock"
+    };
+  },
+  onShareTimeline() {
+    return { title: "茂智腈纶助手 - 库存查询", query: "" };
+  },
 });

@@ -37,6 +37,9 @@
   justify-content: center;
   flex-shrink: 0;
 }
+.avatar-img {
+  background: transparent;
+}
 
 .nickname {
   font-size: 34rpx;

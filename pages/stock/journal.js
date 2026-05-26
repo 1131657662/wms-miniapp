@@ -33,4 +33,21 @@ Page({
       this.setData({ loading: false });
     }
   },
+
+  onShareAppMessage() {
+    const { productCode, productName, productModel } = this.data;
+    const title = productName ? `${productName} ${productCode} 库存流水` : "库存流水";
+    return {
+      title,
+      path: `/pages/stock/journal?code=${encodeURIComponent(productCode)}&name=${encodeURIComponent(productName)}&model=${encodeURIComponent(productModel)}`
+    };
+  },
+  onShareTimeline() {
+    const { productCode, productName, productModel } = this.data;
+    const title = productName ? `${productName} ${productCode} 库存流水` : "库存流水";
+    return {
+      title,
+      query: `code=${encodeURIComponent(productCode)}&name=${encodeURIComponent(productName)}&model=${encodeURIComponent(productModel)}`
+    };
+  },
 });

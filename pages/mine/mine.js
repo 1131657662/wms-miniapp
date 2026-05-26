@@ -65,4 +65,19 @@ Page({
   onTapUser() {
     wx.navigateTo({ url: "/pages/account/account" });
   },
+
+  onShareAppMessage() {
+    const { todayInbound, todayOutbound, totalSkuCount, totalTonnage } = this.data;
+    return {
+      title: `茂智腈纶助手 · 今日入库${todayInbound}笔 出库${todayOutbound}笔`,
+      path: "/pages/mine/mine"
+    };
+  },
+  onShareTimeline() {
+    const { todayInbound, todayOutbound, totalSkuCount, totalTonnage } = this.data;
+    return {
+      title: `茂智腈纶助手 · 今日入库${todayInbound}笔 出库${todayOutbound}笔`,
+      query: ""
+    };
+  },
 });
