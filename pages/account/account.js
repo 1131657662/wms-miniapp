@@ -1,4 +1,5 @@
 const { logout } = require("../../utils/auth");
+const request = require("../../utils/request");
 
 function parseAvatar(raw) {
   if (!raw || raw.startsWith("/public/default-avatars/")) {
@@ -11,12 +12,20 @@ function parseAvatar(raw) {
 }
 
 Page({
-  data: { userInfo: {}, isRealAvatar: false, avatarFullUrl: "" },
+  data: { userInfo: {}, isRealAvatar: false, avatarFullUrl: "", loaded: false },
 
-  onLoad() {
-    const userInfo = wx.getStorageSync("userInfo") || {};
-    const avatarInfo = parseAvatar(userInfo.avatar);
-    this.setData({ userInfo, isRealAvatar: avatarInfo.isRealAvatar, avatarFullUrl: avatarInfo.fullUrl });
+  async onLoad() {
+    try {
+      const res = await request.get("/api/user/profile");
+      const userInfo = res.data || {};
+      const avatarInfo = parseAvatar(userInfo.avatar);
+      this.setData({ userInfo, isRealAvatar: avatarInfo.isRealAvatar, avatarFullUrl: avatarInfo.fullUrl, loaded: true });
+    } catch (e) {
+      // 接口失败时回退到本地缓存
+      const userInfo = wx.getStorageSync("userInfo") || {};
+      const avatarInfo = parseAvatar(userInfo.avatar);
+      this.setData({ userInfo, isRealAvatar: avatarInfo.isRealAvatar, avatarFullUrl: avatarInfo.fullUrl, loaded: true });
+    }
   },
 
   onChangePassword() {
