@@ -1,11 +1,22 @@
 const { logout } = require("../../utils/auth");
 
+function parseAvatar(raw) {
+  if (!raw || raw.startsWith("/public/default-avatars/")) {
+    return { isRealAvatar: false, fullUrl: "" };
+  }
+  if (raw.startsWith("/public/avatars/")) {
+    return { isRealAvatar: true, fullUrl: "https://erp.nbsmzwl.cn" + raw };
+  }
+  return { isRealAvatar: false, fullUrl: "" };
+}
+
 Page({
-  data: { userInfo: {} },
+  data: { userInfo: {}, isRealAvatar: false, avatarFullUrl: "" },
 
   onLoad() {
     const userInfo = wx.getStorageSync("userInfo") || {};
-    this.setData({ userInfo });
+    const avatarInfo = parseAvatar(userInfo.avatar);
+    this.setData({ userInfo, isRealAvatar: avatarInfo.isRealAvatar, avatarFullUrl: avatarInfo.fullUrl });
   },
 
   onChangePassword() {

@@ -1,7 +1,7 @@
 <view class="page page-account">
   <view class="account-hero">
     <view class="user-card">
-      <image wx:if="{{userInfo.avatar}}" class="avatar avatar-img" src="{{userInfo.avatar}}" mode="aspectFill" />
+      <image wx:if="{{isRealAvatar}}" class="avatar avatar-img" src="{{avatarFullUrl}}" mode="aspectFill" />
       <view wx:else class="avatar">{{userInfo.nickname ? userInfo.nickname[0] : '用'}}</view>
       <view class="user-info">
         <view class="nickname">{{userInfo.nickname || userInfo.username || '用户'}}</view>
